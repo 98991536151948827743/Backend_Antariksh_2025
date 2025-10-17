@@ -2,67 +2,39 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser'; 
+import serverless from 'serverless-http';
 
 import { connectToMongo } from '../database/mongoConnection.js';
 import authRouter from '../route/auth.route.js';
 import contactRouter from '../route/contact.route.js';
-import serverless from "serverless-http";
-
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-
 
 // Middleware
 app.use(
   cors({
-    origin: '*',      // Allow all origins
-    credentials: true, // Note: credentials won't work with '*' origin
+    origin: '*',      
+    credentials: true,
   })
 );
-
 app.use(express.json());
 app.use(cookieParser());
 
-// Root route
-app.get('/', (req, res) => {
-  res.send('Welcome to the Quotes API');
-});
-
-// Routers
-app.use("/api/auth", authRouter); 
-app.use("/api/services", contactRouter); 
-
-// Health check route
-app.get('/api/health', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Server is running',
-    timestamp: new Date().toISOString(),
-  });
-});
+// Routes
+app.get('/', (req, res) => res.send('Welcome to the Quotes API'));
+app.get('/api/health', (req, res) => res.json({ success: true, timestamp: new Date().toISOString() }));
+app.use('/api/auth', authRouter);
+app.use('/api/services', contactRouter);
 
 // Global error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({
-    success: false,
-    message: 'Something went wrong!',
-    error: err.message || err,
-  });
+  res.status(500).json({ success: false, message: err.message || 'Something went wrong!' });
 });
 
-
-// Connect to MongoDB and start server
-// connectToMongo().then(() => {
-//   app.listen(PORT, () => {
-//     console.log(`✅ Server running on http://localhost:${PORT}`);
-//     console.log(`Health check: http://localhost:${PORT}/api`);
-//   });
-// });
-
-connectToMongo()
+// Connect to Mongo
+await connectToMongo(); // top-level await works in Node 18+ on Vercel
 
 export default serverless(app);
