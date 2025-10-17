@@ -1,24 +1,16 @@
-import mongoose from 'mongoose';
-import { DB_NAME } from './Constants.js'; // Make sure this exists
+import mongoose from "mongoose";
+import { DB_NAME } from "./Constants.js";
 
 let dbConnection = null;
 
 export const connectToMongo = async () => {
-  if (dbConnection) return dbConnection; // reuse existing connection
-
   try {
-    const uri = `${process.env.MONGO_URI}/${DB_NAME}`; // or just process.env.MONGO_URI
-    console.log('Connecting to MongoDB at:', uri);
-
-    dbConnection = await mongoose.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-
-    console.log('✅ MongoDB connected successfully');
-    return dbConnection;
+    const uri = `${process.env.MONGO_URI}/${DB_NAME}`;
+    console.log("Connecting to:", uri);
+    dbConnection = await mongoose.connect(uri);
+    console.log("✅ Connected to IndexDB");
   } catch (error) {
-    console.error('❌ Error connecting to MongoDB:', error);
-    throw error;
+    console.error("❌ Error connecting to IndexDB:", error);
+    throw new Error("Failed to connect to IndexDB");
   }
 };
