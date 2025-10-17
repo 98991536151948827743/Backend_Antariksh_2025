@@ -1,5 +1,5 @@
 import { transporter } from './nodemailerSetup.js';
-import { generateOtpEmail } from './generateOTPMail.js';
+import { generateOtpEmail } from './GenerateOTPMail.js';
 import ModelUser from '../model/User.model.js';
 
 const sendOtpToUser = async (email) => {
