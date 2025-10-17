@@ -3,10 +3,10 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser'; 
 
-import { connectToMongo } from './database/mongoConnection.js';
-import authRouter from './route/auth.route.js';
-import contactRouter from './route/contact.route.js';
-import pdfRouter from './route/pdf.route.js';
+import { connectToMongo } from '../database/mongoConnection.js';
+import authRouter from '../route/auth.route.js';
+import contactRouter from '../route/contact.route.js';
+// import pdfRouter from '../route/pdf.route.js';
 
 dotenv.config();
 
@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
 // Routers
 app.use("/api/auth", authRouter); 
 app.use("/api/services", contactRouter); 
-app.use("/api/pdf", pdfRouter); 
+// app.use("/api/pdf", pdfRouter); 
 
 // Health check route
 app.get('/api/health', (req, res) => {
@@ -56,13 +56,13 @@ app.use((err, req, res, next) => {
 
 
 // Connect to MongoDB and start server
-// connectToMongo().then(() => {
-//   app.listen(PORT, () => {
-//     console.log(`✅ Server running on http://localhost:${PORT}`);
-//     console.log(`Health check: http://localhost:${PORT}/api`);
-//   });
-// });
+connectToMongo().then(() => {
+  app.listen(PORT, () => {
+    console.log(`✅ Server running on http://localhost:${PORT}`);
+    console.log(`Health check: http://localhost:${PORT}/api`);
+  });
+});
 
-connectToMongo()
+// connectToMongo()
 
 export default app;

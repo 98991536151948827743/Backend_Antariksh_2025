@@ -1,16 +1,16 @@
 import { Router } from "express";
 import {
-  requestOtp as sendOTP,
-  verifyOtp as verifyOTP,
+  requestOtp,
+  verifyOtp,
   resendOtp,
 } from "../controllers/authcontroller/auth.controller.js";
 
 const router = Router();
 
 // ---------------- AUTH ROUTES ---------------- //
-router.post("/send-otp", sendOTP);
+router.post("/send-otp", requestOtp);
 
-router.post("/verify-otp", verifyOTP);
+router.post("/verify-otp", verifyOtp);
 
 router.post("/resendOtp", resendOtp);
 
