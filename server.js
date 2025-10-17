@@ -56,13 +56,13 @@ app.use((err, req, res, next) => {
 
 
 // Connect to MongoDB and start server
-connectToMongo().then(() => {
-  app.listen(PORT, () => {
-    console.log(`✅ Server running on http://localhost:${PORT}`);
-    console.log(`Health check: http://localhost:${PORT}/api`);
-  });
-});
+// connectToMongo().then(() => {
+//   app.listen(PORT, () => {
+//     console.log(`✅ Server running on http://localhost:${PORT}`);
+//     console.log(`Health check: http://localhost:${PORT}/api`);
+//   });
+// });
 
-// connectToMongo()
+connectToMongo()
 
 export default app;
