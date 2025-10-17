@@ -1,5 +1,5 @@
 import ModelUser from '../../model/User.model.js';
-import sendOtpToUser from "../../nodemailer/sendOTP.js";
+import sendOtpToUser from "../../nodemailer/SendOTP.js";
 import sendConfirmationEmail from "../../nodemailer/sendConfirmation.js";
 
 export const requestOtp = async (req, res) => {
@@ -7,7 +7,7 @@ export const requestOtp = async (req, res) => {
   if (!email) {
     return res.status(400).json({ success: false, message: " Email is required." });
   }
-  //check if user exists
+  //check if user exist
   const existingUser = await ModelUser.findOne({ email });
   if (existingUser && existingUser.verified) {
     return res.status(400).json({ success: false, message: " Email is already verified." });

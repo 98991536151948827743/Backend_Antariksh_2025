@@ -45,7 +45,7 @@ const sendOtpToUser = async (email) => {
       });
     }
 
-    // Save the OTP record
+    // Save the OTP records
     await record.save();
 
     // Send OTP email
