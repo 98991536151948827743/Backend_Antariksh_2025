@@ -1,41 +1,41 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import cookieParser from 'cookie-parser';
-import serverless from 'serverless-http';
+import cookieParser from 'cookie-parser'; 
 
 import { connectToMongo } from '../database/mongoConnection.js';
 import authRouter from '../route/auth.route.js';
 import contactRouter from '../route/contact.route.js';
+import serverless from "serverless-http";
+
 
 dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
 
 // Middleware
 app.use(
   cors({
-    origin: '*', // Allow all origins
-    credentials: true,
+    origin: '*',      // Allow all origins
+    credentials: true, // Note: credentials won't work with '*' origin
   })
 );
+
 app.use(express.json());
 app.use(cookieParser());
 
 // Root route
 app.get('/', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Welcome to the Quotes API',
-    timestamp: new Date().toISOString(),
-  });
+  res.send('Welcome to the Quotes API');
 });
 
 // Routers
-app.use('/api/auth', authRouter);
-app.use('/api/services', contactRouter);
+app.use("/api/auth", authRouter); 
+app.use("/api/services", contactRouter); 
 
-// Health check
+// Health check route
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
@@ -46,7 +46,7 @@ app.get('/api/health', (req, res) => {
 
 // Global error handler
 app.use((err, req, res, next) => {
-  console.error('❌ Global error:', err.stack || err);
+  console.error(err.stack);
   res.status(500).json({
     success: false,
     message: 'Something went wrong!',
@@ -54,10 +54,15 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Connect to MongoDB before handling requests
-connectToMongo()
-  .then(() => console.log('✅ MongoDB connected successfully'))
-  .catch((err) => console.error('❌ MongoDB connection failed:', err));
 
-// Export for Vercel serverless function
+// Connect to MongoDB and start server
+// connectToMongo().then(() => {
+//   app.listen(PORT, () => {
+//     console.log(`✅ Server running on http://localhost:${PORT}`);
+//     console.log(`Health check: http://localhost:${PORT}/api`);
+//   });
+// });
+
+connectToMongo()
+
 export default serverless(app);
