@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-export const generateOtpEmail = (name = "Explorer") => {
+const generateOtpEmail = (name = "Explorer") => {
   const otp = crypto.randomInt(100000, 999999).toString();
 
   const subject = '🔐 Your Antariksh OTP – Verify Your Account';
@@ -73,3 +73,5 @@ export const generateOtpEmail = (name = "Explorer") => {
 
   return { otp, subject, html };
 };
+
+export default generateOtpEmail;
