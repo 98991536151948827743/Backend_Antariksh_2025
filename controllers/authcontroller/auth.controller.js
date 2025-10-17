@@ -1,5 +1,5 @@
 import ModelUser from '../../model/User.model.js';
-import sendOtpToUser from "../../nodemailer/SendOTP.js";
+import sendOtpToUser from "../../nodemailer/sendOTP.js";
 import sendConfirmationEmail from "../../nodemailer/sendConfirmation.js";
 
 export const requestOtp = async (req, res) => {
