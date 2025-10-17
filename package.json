@@ -5,8 +5,8 @@
   "main": "./api/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-  "dev": "vercel dev",
-  "start": "node api/index.js"
+    "dev": "vercel dev",
+    "start": "node api/index.js"
   },
   "keywords": [],
   "author": "RahulGupta",
@@ -28,5 +28,14 @@
     "nodemailer": "^7.0.6",
     "nodemon": "^3.1.10",
     "serverless-http": "^4.0.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/98991536151948827743/Backend_Antariksh_2025.git"
+  },
+  "bugs": {
+    "url": "https://github.com/98991536151948827743/Backend_Antariksh_2025/issues"
+  },
+  "homepage": "https://github.com/98991536151948827743/Backend_Antariksh_2025#readme"
 }
