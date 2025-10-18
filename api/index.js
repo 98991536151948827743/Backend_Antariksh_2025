@@ -1,68 +1,53 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import cookieParser from 'cookie-parser'; 
+// api/index.js
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
 
-import { connectToMongo } from '../database/mongoConnection.js';
-import authRouter from '../route/auth.route.js';
-import contactRouter from '../route/contact.route.js';
-import serverless from "serverless-http";
-
+import authRouter from "../route/auth.route.js";
+import contactRouter from "../route/contact.route.js";
+import { connectToMongo } from "../database/mongoConnection.js";
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-
 
 // Middleware
-app.use(
-  cors({
-    origin: '*',      // Allow all origins
-    credentials: true, // Note: credentials won't work with '*' origin
-  })
-);
-
+app.use(cors({ origin: true, credentials: true })); // set origin true or a specific domain in prod
 app.use(express.json());
 app.use(cookieParser());
 
-// Root route
-app.get('/', (req, res) => {
-  res.send('Welcome to the Quotes API');
+// Basic root
+app.get("/", (req, res) => {
+  res.json({ success: true, message: "Welcome to Antariksh Backend!" });
 });
 
 // Routers
-app.use("/api/auth", authRouter); 
-app.use("/api/services", contactRouter); 
+app.use("/api/auth", authRouter);
+app.use("/api/services", contactRouter);
 
-// Health check route
-app.get('/api/health', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Server is running',
-    timestamp: new Date().toISOString(),
-  });
+// Health check
+app.get("/api/health", (req, res) => {
+  res.json({ success: true, message: "Server is running", timestamp: new Date().toISOString() });
 });
 
-// Global error handler
+// Error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({
-    success: false,
-    message: 'Something went wrong!',
-    error: err.message || err,
-  });
+  console.error("Unhandled error:", err);
+  res.status(500).json({ success: false, message: "Something went wrong", error: err?.message || err });
 });
 
-
-// Connect to MongoDB and start server
-// connectToMongo().then(() => {
-//   app.listen(PORT, () => {
-//     console.log(`✅ Server running on http://localhost:${PORT}`);
-//     console.log(`Health check: http://localhost:${PORT}/api`);
-//   });
-// });
-
+/**
+ * NOTE about Mongo: Do NOT call connectToMongo() and then immediately export the handler
+ * without ensuring connectToMongo returns quickly. We'll call connectToMongo() below
+ * and allow it to cache the connection. serverless-http will reuse warm containers.
+ */
 connectToMongo()
+  .then(() => console.log("✅ MongoDB connection (attempted)"))
+  .catch((err) => console.error("MongoDB connection error (initial):", err));
 
-export default serverless(app);
+// Export serverless handler for Vercel
+// const handler = serverless(app);
+// export default handler;
+
+export default app;
