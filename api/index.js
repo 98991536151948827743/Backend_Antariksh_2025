@@ -8,13 +8,20 @@ import authRouter from "../route/auth.route.js";
 import contactRouter from "../route/contact.route.js";
 import { connectToMongo } from "../database/mongoConnection.js";
 
+// Load environment variables
 dotenv.config();
 
 const app = express();
 
 // Middleware
-app.use(cors({ origin: true, credentials: true })); // set origin true or a specific domain in prod
-app.use(express.json());
+app.use(cors({ 
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://your-frontend-domain.vercel.app', 'https://your-custom-domain.com'] 
+    : true, 
+  credentials: true 
+}));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
 // Basic root
@@ -38,14 +45,30 @@ app.use((err, req, res, next) => {
 });
 
 /**
- * NOTE about Mongo: Do NOT call connectToMongo() and then immediately export the handler
- * without ensuring connectToMongo returns quickly. We'll call connectToMongo() below
- * and allow it to cache the connection. serverless-http will reuse warm containers.
+ * MongoDB Connection for Vercel
+ * Connect to MongoDB and cache the connection for serverless reuse
  */
-connectToMongo()
-  .then(() => console.log("✅ MongoDB connection (attempted)"))
-  .catch((err) => console.error("MongoDB connection error (initial):", err));
+let mongoConnected = false;
+
+const connectMongoIfNeeded = async () => {
+  if (!mongoConnected) {
+    try {
+      await connectToMongo();
+      mongoConnected = true;
+      console.log("✅ MongoDB connected successfully");
+    } catch (error) {
+      console.error("❌ MongoDB connection failed:", error);
+      // Don't throw error to prevent function from failing
+    }
+  }
+};
+
+// Connect to MongoDB on cold start
+connectMongoIfNeeded();
 
 // Export serverless handler for Vercel
-const handler = serverless(app);
+const handler = serverless(app, {
+  binary: ['image/*', 'application/pdf']
+});
+
 export default handler;
