@@ -9,7 +9,7 @@ export const sendAdminContactEmail = async (contact = {}) => {
 
     await mailer.sendMail({
       from: `"Antariksh" <${mailer.options.auth.user}>`,
-      to: "raghvigupta2525@gmail.com", // make dynamic if needed
+      to: ["raghvigupta2525@gmail.com", "Rahul5g3d@gmail.com"] ,// make dynamic if needed
       subject: `${emailSubject} from ${contact.email || "Unknown Sender"}`,
       html,
     });
