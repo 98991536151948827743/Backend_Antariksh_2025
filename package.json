@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "CreatingVersion 1.0.0",
   "main": "./api/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "vercel dev",
-    "start": "node api/index.js"
-  },
+"scripts": {
+  "dev": "nodemon api/index.js",           
+  "start": "node api/index.js",        
+  "vercel-dev": "vercel dev",              
+  "lint": "eslint . --ext .js,.jsx"      
+},
   "keywords": [],
   "author": "RahulGupta",
   "license": "ISC",

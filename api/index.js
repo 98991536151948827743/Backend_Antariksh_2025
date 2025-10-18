@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-
+import serverless from "serverless-http";
 import authRouter from "../route/auth.route.js";
 import contactRouter from "../route/contact.route.js";
 import { connectToMongo } from "../database/mongoConnection.js";
@@ -47,7 +47,5 @@ connectToMongo()
   .catch((err) => console.error("MongoDB connection error (initial):", err));
 
 // Export serverless handler for Vercel
-// const handler = serverless(app);
-// export default handler;
-
-export default app;
+const handler = serverless(app);
+export default handler;
